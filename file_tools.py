@@ -10,7 +10,6 @@ def directory_image_list(directory):
     for filename in os.listdir(directory):
         if (os.path.splitext(filename)[1] == ".jpg"):
             list.append(os.path.join(dirname, directory, filename))
-    print(list)
     return list
 
 def get_silhouettes():
