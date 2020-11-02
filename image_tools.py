@@ -2,6 +2,7 @@ import os
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import random
 
 # Converts png image to grayscale and keeps alpha channel
 def png_grayscale(image):
@@ -37,3 +38,23 @@ def resize_image(image, scale_percent):
 def blur_image(image):
     kernel_size = (81,81)
     return cv2.GaussianBlur(image, kernel_size, 0)
+
+# Pads silhouette with empty pixels (white for jpg and transparent for png)
+# shape argument is size of returned image
+# original silhouette is always placed at the bottom but horizontal position is randomly determined
+def pad_silhouette(silhouette, image_shape, ext):
+    (img_w, img_h) = image_shape
+    (sil_w, sil_h, _) = silhouette.shape
+    padding_top = img_h - sil_h
+    padding_left = random.randint(0, img_w - sil_w)
+    padding_right = img_w - sil_w - padding_left
+    if ext == ".jpg":
+        border_color = [0]
+    elif ext == ".png":
+        border_color = [0,0,0,0]
+    return cv2.copyMakeBorder(silhouette.copy(), padding_top, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=border_color)
+
+
+
+
+    
