@@ -21,6 +21,7 @@ class Mask:
     # Returned image is of same shape as input image
     # Original shadow is always placed at the bottom but horizontal position is randomly determined
     def pad(self, image_shape):
+        # TODO: Catch error if shadow is larger than img
         (img_h, img_w, _) = image_shape
         (shadow_h, shadow_w, _) = self.shape
         padding_top = img_h - shadow_h
@@ -33,7 +34,7 @@ class Mask:
             padding_left, 
             padding_right, 
             cv2.BORDER_CONSTANT, 
-            value=[0,0,0,0]
+            value=[255,255,255,0]
         )
         self.shadow = padded
         self.shape = padded.shape
@@ -57,5 +58,14 @@ class Mask:
         for color in range(3):
             new_image[:,:,color] = alpha * self.shadow[:,:,color] + (1-alpha) * new_image[:,:,color]
         return new_image
+
+    # Applies blurring to have a more realistic shadow
+    def blur(self):
+        # Pad shadow a little
+        self.pad((self.shape[0]+50, self.shape[1]+50, 0))
+        # Gaussian blur
+        kernel_size = (15, 15)
+        blurred = cv2.GaussianBlur(self.shadow, kernel_size, 15)
+        self.shadow = blurred
         
 
