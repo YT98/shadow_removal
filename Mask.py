@@ -1,46 +1,61 @@
-from image_tools import load_image, show_image, resize_image, blur_image
-from file_tools import get_silhouettes
+from image_tools import *
+from file_tools import *
 import cv2
 import random
 
 class Mask:
-    def __init__(self):
-        self.silhouettes = []
-        for file in get_silhouettes():
-            self.silhouettes.append(load_image(file))
+    def __init__(self, shadow):
+        self.shadow = shadow
+        self.shape = shadow.shape
+    
+    # Resizes shadow keeping its original aspect ratio
+    def scale(self, scale):
+        width = int(self.shape[1] * scale / 100)
+        height = int(self.shape[0] * scale / 100)
+        shape = (width, height)
+        scaled = cv2.resize(self.shadow, shape, interpolation=cv2.INTER_AREA)
+        self.shadow = np.asarray(scaled)
+        self.shape = scaled.shape
 
-    # Randomizes shadow size
-    def random_size_silhouettes(self):
-        new_silhouettes = []
-        for sil in self.silhouettes:
-            # Randomize size increase
-            increase = random.randint(150, 350)
-            new_silhouettes.append(
-                resize_image(sil, increase)
-            )
-        self.silhouettes = new_silhouettes
+    # Pads shadow with transparent pixels 
+    # Returned image is of same shape as input image
+    # Original shadow is always placed at the bottom but horizontal position is randomly determined
+    def pad(self, image_shape):
+        (img_h, img_w, _) = image_shape
+        (shadow_h, shadow_w, _) = self.shape
+        padding_top = img_h - shadow_h
+        padding_left = random.randint(0, img_w - shadow_w)
+        padding_right = img_w - shadow_w - padding_left
+        padded = cv2.copyMakeBorder(
+            self.shadow.copy(), 
+            padding_top, 
+            0, 
+            padding_left, 
+            padding_right, 
+            cv2.BORDER_CONSTANT, 
+            value=[0,0,0,0]
+        )
+        self.shadow = padded
+        self.shape = padded.shape
 
-    # Blur silouettes
-    def blur_silhouettes(self):
-        new_silhouettes = []
-        for sil in self.silhouettes:
-            new_silhouettes.append(blur_image(sil))
-        self.silhouettes = new_silhouettes
+    # Changes mask transparency
+    def change_transparency(self, transparency):
+        new_shadow = self.shadow.copy()
+        a_channel_value = int(255*transparency)
+        for x in range(new_shadow.shape[0]):
+            for y in range(new_shadow.shape[1]):
+                if (new_shadow[x, y, 3] != 0):
+                    new_shadow[x, y, 3] = a_channel_value
+        self.shadow = new_shadow
 
-    # Applies shadow on given image
-    def mask_image(self, shadow, image):
+    # Applies mask to given image
+    def apply(self, image):
         new_image = image.copy()
-        alpha = 0.6
-        row, cols = shadow.shape
-        roi = new_image[new_image.shape[0]-row:, new_image.shape[1]-cols:]
-        shadowed_roi = cv2.addWeighted(roi, 1-alpha, shadow, alpha,0)
-        new_image[new_image.shape[0]-row:, new_image.shape[1]-cols:] = shadowed_roi
+        # Normalize alpha channel from 0-255 to 0-1
+        alpha = self.shadow[:,:,3] / 255.0
+        # Element-wise multiplication, each channel multiplied by alpha (or 1-alpha)
+        for color in range(3):
+            new_image[:,:,color] = alpha * self.shadow[:,:,color] + (1-alpha) * new_image[:,:,color]
         return new_image
+        
 
-    # Applies all shadows on given image
-    def mask_all_silhouettes(self, image):
-        shadowed_images = []
-        for sil in self.silhouettes:
-            new_image = self.mask_image(sil, image)
-            shadowed_images.append(new_image)
-        return shadowed_images
