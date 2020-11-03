@@ -23,8 +23,7 @@ class MaskSet:
         else:
             print("Initializing mask set:")
             self.silhouette_mask_set = self.init_silhouette_masks()
-            # self.perlin_mask_set = self.init_perlin_masks()
-            # self.mask_set = self.silhouette_mask_set + self.perlin_mask_set
+            self.perlin_mask_set = self.init_perlin_masks()
         
     # Load mask images from directory
     def load_masks(self, progress_bar_prefix, directory):
