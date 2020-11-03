@@ -1,22 +1,20 @@
 import random
 import cv2
-import file_tools as file_tools
-import image_tools as image_tools
-import perlin_noise as perlin_noise
-
 import queue as que
 import threading
 import time
-
+import file_tools as file_tools
+import image_tools as image_tools
+import perlin_noise as perlin_noise
 from console_tools import print_progress_bar
-
 from SilhouetteMask import SilhouetteMask
 from PerlinMask import PerlinMask
 
 class MaskSet:
-    def __init__(self):
-        print("Initializing mask set:")
+    def __init__(self, largest_shape):
+        self.largest_shape = largest_shape
         self.silhouettes_path = file_tools.ps_he_tb
+        print("Initializing mask set:")
         self.silhouette_mask_set = self.init_silhouette_masks()
         self.perlin_mask_set = self.init_perlin_masks()
         self.mask_set = self.silhouette_mask_set + self.perlin_mask_set
@@ -80,7 +78,7 @@ class MaskSet:
 
         # Creates perlin mask
         def create_perlin_mask():
-            perlin_mask = PerlinMask()
+            perlin_mask = PerlinMask(self.largest_shape)
             return perlin_mask
 
         # Create perlin mask set
