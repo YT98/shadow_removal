@@ -30,10 +30,17 @@ class PerlinMask:
         mask = cv2.merge((r, g, b, a))
         return mask
 
+    # Trims mask to given shape
+    def trim(self, shape):
+        h, w, *_ = self.mask.shape
+        self.mask = self.mask[:h,:w,:]
+
     # Applies mask to given image
     def apply(self, image):
         # Apply mask to image
         new_image = image.copy()
+        # Trim mask to image shape
+        self.trim(image.shape)
         # Normalize alpha channel from 0-255 to 0-1
         alpha = self.mask[:,:,3] / 255.0
         # TODO try doing :3 instead of range(3)
