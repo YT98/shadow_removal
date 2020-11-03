@@ -4,20 +4,20 @@ import cv2
 from perlin_noise import perlin_mask
 
 class PerlinMask:
-    def __init__(self):
+    def __init__(self, shape):
+        self.shape = shape
         self.scale = 100.0
         self.octaves = 4
         self.lacunarity = 3.0
         self.base = 1
         self.persistence = random.uniform(0.05, 0.25)
         self.transparency = random.uniform(0.4, 0.8)
+        self.mask = self.init_mask()
 
-    # Creates mask of given shape
-    def init_mask(self, shape):
-        # Create mask
-        w, h, *_ = shape
+    # Creates mask
+    def init_mask(self):
         mask = perlin_mask(
-            (w, h), 
+            self.shape, 
             self.scale, 
             self.octaves, 
             self.persistence, 
@@ -25,15 +25,13 @@ class PerlinMask:
             self.base
         )
         # Add alpha channel
-        a = np.full((w,h,1), 255.0 * self.transparency, dtype=np.uint8)
+        a = np.full((self.shape[0],self.shape[1],1), 255.0 * self.transparency, dtype=np.uint8)
         r, g, b = cv2.split(mask)
         mask = cv2.merge((r, g, b, a))
         return mask
 
     # Applies mask to given image
     def apply(self, image):
-        # Initialize mask with given shape
-        self.mask = self.init_mask(image.shape)
         # Apply mask to image
         new_image = image.copy()
         # Normalize alpha channel from 0-255 to 0-1
