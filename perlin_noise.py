@@ -14,8 +14,8 @@ def perlin_mask(shape, scale, octaves, persistence, lacunarity, base):
                                         octaves=octaves, 
                                         persistence=persistence, 
                                         lacunarity=lacunarity, 
-                                        repeatx=1024, 
-                                        repeaty=1024, 
+                                        repeatx=shape[0], 
+                                        repeaty=shape[1], 
                                         base=base)
             # Denormalize between 0 and 255
             mask[i][j] = ((pixel+1)/2.0*255.0)
