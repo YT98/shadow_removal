@@ -1,4 +1,3 @@
-import sys
 import file_tools as file_tools
 import image_tools as image_tools
 
@@ -19,8 +18,8 @@ class DocumentSet:
 
     # Returns largest width and largest height in document set
     def get_largest_shape(self):
-        largest_w = sys.maxsize
-        largest_h = sys.maxsize
+        largest_w = 0
+        largest_h = 0
         for document in self.document_set:
             # Unpack document shape
             document_h, document_w, *_ = document.shape
