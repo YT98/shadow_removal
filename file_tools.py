@@ -34,5 +34,4 @@ def rename_files(directory, name):
 
 # Saves image to destination
 def save_image(destination, image):
-    print(image)
     cv2.imwrite(destination, image)
