@@ -11,18 +11,48 @@ from SilhouetteMask import SilhouetteMask
 from PerlinMask import PerlinMask
 
 class MaskSet:
-    def __init__(self, largest_shape):
+    def __init__(self, largest_shape=(1024,1024), load=False):
         self.largest_shape = largest_shape
         self.silhouettes_path = file_tools.ps_he_tb
-        print("Initializing mask set:")
-        self.silhouette_mask_set = self.init_silhouette_masks()
-        self.perlin_mask_set = self.init_perlin_masks()
-        self.mask_set = self.silhouette_mask_set + self.perlin_mask_set
+        self.silhouette_mask_path = file_tools.silhouette_masks_path
+        self.perlin_mask_path = file_tools.perlin_masks_path
+        if load:
+            print("Loading mask set:")
+            self.silhouette_mask_set = self.load_masks("Loading Silhouette Masks", self.silhouette_mask_path)
+            self.perlin_mask_set = self.load_masks("Loading Perlin Masks", self.perlin_mask_path)
+        else:
+            print("Initializing mask set:")
+            self.silhouette_mask_set = self.init_silhouette_masks()
+            # self.perlin_mask_set = self.init_perlin_masks()
+            # self.mask_set = self.silhouette_mask_set + self.perlin_mask_set
         
+    # Load mask images from directory
+    def load_masks(self, progress_bar_prefix, directory):
+        start = time.time() # Start timer
+        mask_set = []
+        # Get silhouette mask images path
+        mask_path_list = file_tools.directory_image_list(directory)
+        # Initialize progress bar
+        print_progress_bar(0, len(mask_path_list), prefix=progress_bar_prefix, suffix="Complete", length=50)
+        # Load silhouette masks
+        for i, mask_path in enumerate(mask_path_list):
+            # Start thread and wait for completion
+            queue = queue.Queue()
+            thread = threading.Thread(
+                target = lambda q, path: q.put(image_tools.load_image(path)),
+                args = (queue, mask_path)
+            )
+            mask = image_tools.load_image(mask_path)
+            # Update progress bar
+            print_progress_bar(i+1, len(mask_path_list), prefix=progress_bar_prefix, suffix="Complete", length=50)
+            mask_set.append(mask)
+        # Print timer
+        print("Timer: ", time.time() - start, " seconds")
+        return mask_set
+
     # Initialize silhouette masks
     def init_silhouette_masks(self):
-        # Start timer
-        start = time.time()
+        start = time.time() # Start timer
         # Get silhouette image paths
         silhouette_path_list = file_tools.directory_image_list(self.silhouettes_path)
         # Initialize silhouette mask set
@@ -31,7 +61,6 @@ class MaskSet:
         n = 3
         # Total number of silhouette masks
         silhouette_mask_set_length = len(silhouette_path_list) * n
-
         # Creates silhouette mask from given silhouette with randomized variables and returns
         def create_silhouette_mask(silhouette):
             transparency = random.uniform(0.4, 0.8)
@@ -42,7 +71,6 @@ class MaskSet:
             silhouette_mask.scale(scale)
             silhouette_mask.change_transparency(transparency)
             return silhouette_mask
-
         # Create silhouette mask set
         count = 0
         for silhouette_path in silhouette_path_list:
@@ -62,9 +90,8 @@ class MaskSet:
                 silhouette_mask_set.append(silhouette_mask)
                 # Update progress bar
                 print_progress_bar(count, silhouette_mask_set_length, prefix="Silhouette Masks:", suffix="Complete", length=50)
-
         # Print timer
-        print("Timer: ", time.time() - start)
+        print("Timer: ", time.time() - start, " seconds")
         return silhouette_mask_set
 
     # Initialize perlin masks
@@ -75,12 +102,12 @@ class MaskSet:
         perlin_mask_set = []
         # Get number of silhouette masks (same number of perlin masks)
         silhouette_mask_set_length = len(self.silhouette_mask_set)
-
         # Creates perlin mask
         def create_perlin_mask():
             perlin_mask = PerlinMask(self.largest_shape)
             return perlin_mask
-
+        # Create progress bar
+        print_progress_bar(0, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
         # Create perlin mask set
         for i in range(silhouette_mask_set_length):
             # Create thread and wait for completion
@@ -97,23 +124,21 @@ class MaskSet:
             print_progress_bar(i+1, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
 
         # Print timer
-        print("Timer: ", time.time() - start)
+        print("Timer: ", time.time() - start, " seconds")
         return perlin_mask_set
-    
+
     # Applies all masks to given image and return set
     def apply_masks(self, image):
         masked_image_set = []
-
         # Applies single mask to image and converts to gray 
         def apply_mask(image):
             masked_image = mask.apply(image)
             masked_image = cv2.cvtColor(masked_image, cv2.COLOR_RGB2GRAY)
             return masked_image
-
-        # Create masked image set
-        ##
         # Apply silhouette masks
         print("Applying silhouette masks:")
+        # Create progress bar
+        print_progress_bar(0, len(self.silhouette_mask_set), prefix="Applied silhouette masks:", suffix="Complete", length=50)
         # Start timer
         start = time.time()
         for i, mask in enumerate(self.silhouette_mask_set):
@@ -130,10 +155,11 @@ class MaskSet:
             # Update progress bar
             print_progress_bar(i+1, len(self.silhouette_mask_set), prefix="Applied silhouette masks:", suffix="Complete", length=50)
         # Print timer
-        print("Timer: ", time.time() - start)
-        ##
+        print("Timer: ", time.time() - start, "seconds")
         # Apply perlin masks
         print("Applying perlin masks:")
+        # Create progress bar
+        print_progress_bar(0, len(self.perlin_mask_set), prefix="Applied silhouette masks:", suffix="Complete", length=50)
         # Start timer
         start = time.time()
         for i, mask in enumerate(self.perlin_mask_set):
@@ -150,9 +176,43 @@ class MaskSet:
             # Update progress bar
             print_progress_bar(i+1, len(self.perlin_mask_set), prefix="Applied silhouette masks:", suffix="Complete", length=50)
         # Print timer
-        print("Timer: ", time.time() - start)
-        
+        print("Timer: ", time.time() - start, "seconds")
         return masked_image_set
             
-                
+    def save_masks(self):
+        print("Saving mask sets:")
+        # Start timer
+        start = time.time() 
+        # Start progress bar
+        print_progress_bar(0, len(self.silhouette_mask_set), prefix="Saved silhouette masks:", suffix="Complete", length=50)
+        for i, mask in enumerate(self.silhouette_mask_set):
+            mask_path = self.silhouette_mask_path + "/silhouette_mask" + str(i) + ".jpg"
+            # Create thread and wait for completion
+            thread = threading.Thread(
+                target = file_tools.save_image,
+                args = (mask_path, mask.mask)
+            )
+            thread.start()
+            thread.join()
+            # Update progress bar
+            print_progress_bar(i+1, len(self.silhouette_mask_set), prefix="Saved silhouette masks:", suffix="Complete", length=50)
+        # Print timer
+        print("Timer:", time.time() - start, " seconds")
+        # Start timer
+        start = time.time() 
+        # Start progress bar
+        print_progress_bar(0, len(self.perlin_mask_set), prefix="Saved perlin masks:", suffix="Complete", length=50)
+        for i, mask in enumerate(self.perlin_mask_set):
+            mask_path = self.perlin_mask_path + "/perlin_mask" + str(i) + ".jpg"
+            # Create thread and wait for completion
+            thread = threading.Thread(
+                target = file_tools.save_image,
+                args = (mask_path, mask.mask)
+            )
+            thread.start()
+            thread.join()
+            # Update progress bar
+            print_progress_bar(i+1, len(self.perlin_mask_set), prefix="Saved perlin masks:", suffix="Complete", length=50)
+        # Print timer
+        print("Timer: ", time.time() - start, " seconds")
     
