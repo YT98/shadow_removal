@@ -14,10 +14,10 @@ ps_se_wb = os.path.join(ps_path, "soft_edges/white_bg")
 scanned_documents_path = os.path.join(dirname, "data/scanned_documents/grayscale")
 
 # Returns list of png or jpg files in directory
-def directory_image_list(directory, ext):
+def directory_image_list(directory):
     list = []
     for filename in os.listdir(directory):
-        if (os.path.splitext(filename)[1] == ext):
+        if (os.path.splitext(filename)[1] == ".jpg" or os.path.splitext(filename)[1] == ".png"):
             list.append(os.path.join(dirname, directory, filename))
     return list
 
