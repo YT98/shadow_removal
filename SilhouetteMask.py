@@ -16,26 +16,69 @@ class SilhouetteMask:
         scaled = cv2.resize(self.shadow, shape, interpolation=cv2.INTER_AREA)
         self.shadow = np.asarray(scaled)
 
+    # Trims away given number of pixels from shadow
+    def cut(self, top, bottom, left, right):
+        h,w,*_ = self.shadow.shape
+        new_shadow = self.shadow[top : h-bottom, left : w-right, :]
+        self.shadow = new_shadow
+
     # Pads shadow with transparent pixels 
     # Returned image is of same shape as input image
     # Original shadow is always placed at the bottom but horizontal position is randomly determined
     def pad(self, image_shape):
-        # TODO: Catch error if shadow is larger than img
+        # Unpack shapes
         (img_h, img_w, _) = image_shape
         (shadow_h, shadow_w, _) = self.shadow.shape
-        padding_top = img_h - shadow_h
-        padding_left = random.randint(0, img_w - shadow_w)
-        padding_right = img_w - shadow_w - padding_left
-        padded = cv2.copyMakeBorder(
-            self.shadow.copy(), 
-            padding_top, 
-            0, 
-            padding_left, 
-            padding_right, 
-            cv2.BORDER_CONSTANT, 
-            value=[255,255,255,0]
-        )
-        self.shadow = padded
+        # Check shadow / image dimensions
+        if (shadow_h >= img_h) and (shadow_w >= img_w):
+            trim_top = shadow_h - img_h
+            trim_left = random.randint(0, shadow_w - img_w)
+            trim_right = shadow_w - img_w - trim_left
+            self.cut(trim_top, 0, trim_left, trim_right)
+        elif (shadow_h >= img_h) and (shadow_w < img_w):
+            trim_top = shadow_h - img_h
+            padding_left = random.randint(0, img_w - shadow_w)
+            padding_right = img_w - shadow_w - padding_left
+            self.cut(trim_top, 0, 0, 0)
+            padded = cv2.copyMakeBorder(
+                self.shadow.copy(), 
+                0,
+                0, 
+                padding_left, 
+                padding_right, 
+                cv2.BORDER_CONSTANT, 
+                value=[255,255,255,0]
+            )
+            self.shadow = padded
+        elif (shadow_h < img_h) and (shadow_w >= img_w):
+            padding_top = img_h - shadow_h
+            trim_left = random.randint(0, shadow_w - img_w)
+            trim_right = shadow_w - img_w - trim_left
+            self.cut(0, 0, trim_left, trim_right)
+            padded = cv2.copyMakeBorder(
+                self.shadow.copy(), 
+                padding_top,
+                0, 
+                0, 
+                0, 
+                cv2.BORDER_CONSTANT, 
+                value=[255,255,255,0]
+            )
+            self.shadow = padded
+        else:
+            padding_top = img_h - shadow_h
+            padding_left = random.randint(0, img_w - shadow_w)
+            padding_right = img_w - shadow_w - padding_left
+            padded = cv2.copyMakeBorder(
+                self.shadow.copy(), 
+                padding_top,
+                0, 
+                padding_left, 
+                padding_right, 
+                cv2.BORDER_CONSTANT, 
+                value=[255,255,255,0]
+            )
+            self.shadow = padded
 
     # Changes mask transparency
     def change_transparency(self, transparency):
