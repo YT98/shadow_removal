@@ -46,7 +46,7 @@ class MaskSet:
             print_progress_bar(i+1, len(mask_path_list), prefix=progress_bar_prefix, suffix="Complete", length=50)
             mask_set.append(mask)
         # Print timer
-        print("Timer: ", time.time() - start, " seconds")
+        print("Timer: ", time.time() - start, "seconds")
         return mask_set
 
     # Initialize silhouette masks
@@ -90,7 +90,7 @@ class MaskSet:
                 # Update progress bar
                 print_progress_bar(count, silhouette_mask_set_length, prefix="Silhouette Masks:", suffix="Complete", length=50)
         # Print timer
-        print("Timer: ", time.time() - start, " seconds")
+        print("Timer: ", time.time() - start, "seconds")
         return silhouette_mask_set
 
     # Initialize perlin masks
@@ -121,9 +121,8 @@ class MaskSet:
             perlin_mask_set.append(perlin_mask)
             # Update progress bar
             print_progress_bar(i+1, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
-
         # Print timer
-        print("Timer: ", time.time() - start, " seconds")
+        print("Timer: ", time.time() - start, "seconds")
         return perlin_mask_set
 
     # Applies all masks to given image and return set
