@@ -34,4 +34,3 @@ class ShadowSynthesis:
                 # Update progress bar
                 count += 1
                 print_progress_bar(start, count, training_data_length, prefix="Masked images created", suffix="Complete", length=50)
-                if doc_index == 20: return
