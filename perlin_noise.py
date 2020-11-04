@@ -31,6 +31,3 @@ def perlin_mask(shape, scale, octaves, persistence, lacunarity, base):
     # Converting to RGB
     mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
     return mask
-
-mask = perlin_mask((1024,1024), 200.0, 4, 0.4, 2.0, 0)
-show_image(mask)
