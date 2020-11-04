@@ -4,13 +4,13 @@ import cv2
 from perlin_noise import perlin_mask
 
 class PerlinMask:
-    def __init__(self, mask=None, shape=None, scale=200.0, octaves=4, lacunarity=2.0, base=1):
+    def __init__(self, mask=None, shape=None, scale=200.0, octaves=4, lacunarity=2.0):
         self.scale = scale
         self.octaves = octaves
         self.lacunarity = lacunarity
-        self.base = base
+        self.base = random.randint(0,500)
         self.persistence = random.uniform(0.0, 0.85)
-        self.transparency = random.uniform(0.4, 0.8)
+        self.transparency = random.uniform(0.4, 0.7)
         if shape != None:
             self.shape = shape
             self.mask = self.init_mask()
