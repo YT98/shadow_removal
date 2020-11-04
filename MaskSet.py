@@ -17,11 +17,9 @@ class MaskSet:
         self.silhouette_mask_path = file_tools.silhouette_masks_path
         self.perlin_mask_path = file_tools.perlin_masks_path
         if load:
-            print("Loading mask set:")
             self.silhouette_mask_set = self.load_masks("Silhouette Masks", self.silhouette_mask_path)
             self.perlin_mask_set = self.load_masks("Perlin Masks", self.perlin_mask_path)
         else:
-            print("Initializing mask set:")
             self.silhouette_mask_set = self.init_silhouette_masks()
             self.perlin_mask_set = self.init_perlin_masks()
         self.mask_set = self.silhouette_mask_set + self.perlin_mask_set
@@ -92,7 +90,7 @@ class MaskSet:
                 silhouette_mask = queue.get()
                 silhouette_mask_set.append(silhouette_mask)
                 # Update progress bar
-                print_progress_bar(start, count, silhouette_mask_set_length, prefix="Silhouette Masks:", suffix="Complete", length=50)
+                print_progress_bar(start, count, silhouette_mask_set_length, prefix="Silhouette Masks initialized:", suffix="Complete", length=50)
         return silhouette_mask_set
 
     # Initialize perlin masks
@@ -105,10 +103,10 @@ class MaskSet:
         silhouette_mask_set_length = len(self.silhouette_mask_set)
         # Creates perlin mask
         def create_perlin_mask():
-            perlin_mask = PerlinMask(self.largest_shape)
+            perlin_mask = PerlinMask(shape=self.largest_shape)
             return perlin_mask
         # Create progress bar
-        print_progress_bar(start, 0, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
+        print_progress_bar(start, 0, silhouette_mask_set_length, prefix="Perlin Masks initialized:", suffix="Complete", length=50)
         # Create perlin mask set
         for i in range(silhouette_mask_set_length):
             # Create thread and wait for completion
@@ -134,7 +132,6 @@ class MaskSet:
             masked_image = cv2.cvtColor(masked_image, cv2.COLOR_RGB2GRAY)
             return masked_image
         # Apply silhouette masks
-        print("Applying silhouette masks:")
         # Start timer
         start = time.time()
         # Create progress bar
@@ -153,7 +150,6 @@ class MaskSet:
             # Update progress bar
             print_progress_bar(i+1, len(self.silhouette_mask_set), prefix="Applied silhouette masks:", suffix="Complete", length=50)
         # Apply perlin masks
-        print("Applying perlin masks:")
         # Start timer
         start = time.time()
         # Create progress bar
@@ -174,7 +170,6 @@ class MaskSet:
         return masked_image_set
             
     def save_masks(self):
-        print("Saving mask sets:")
         # Start timer
         start = time.time() 
         # Start progress bar
