@@ -4,15 +4,20 @@ import cv2
 from perlin_noise import perlin_mask
 
 class PerlinMask:
-    def __init__(self, shape, scale=200.0, octaves=4, lacunarity=2.0, base=1):
-        self.shape = shape
+    def __init__(self, mask=None, shape=None, scale=200.0, octaves=4, lacunarity=2.0, base=1):
         self.scale = scale
         self.octaves = octaves
         self.lacunarity = lacunarity
         self.base = base
         self.persistence = random.uniform(0.0, 0.85)
         self.transparency = random.uniform(0.4, 0.8)
-        self.mask = self.init_mask()
+        if shape != None:
+            self.shape = shape
+            self.mask = self.init_mask()
+        elif mask.all() != None:
+            self.mask = mask
+            self.shape = self.mask.shape
+        
 
     # Creates mask
     def init_mask(self):
@@ -32,19 +37,19 @@ class PerlinMask:
 
     # Trims mask to given shape
     def trim(self, shape):
-        h, w, *_ = self.mask.shape
-        self.mask = self.mask[:h,:w,:]
+        h, w, *_ = shape
+        return self.mask[:h,:w,:]
 
     # Applies mask to given image
     def apply(self, image):
         # Apply mask to image
         new_image = image.copy()
         # Trim mask to image shape
-        self.trim(image.shape)
+        trimmed = self.trim(image.shape)
         # Normalize alpha channel from 0-255 to 0-1
-        alpha = self.mask[:,:,3] / 255.0
+        alpha = trimmed[:,:,3] / 255.0
         # TODO try doing :3 instead of range(3)
         # Element-wise multiplication, each channel multiplied by alpha (or 1-alpha)
         for color in range(3):
-            new_image[:,:,color] = alpha * self.mask[:,:,color] + (1-alpha) * new_image[:,:,color]
+            new_image[:,:,color] = alpha * trimmed[:,:,color] + (1-alpha) * new_image[:,:,color]
         return new_image
