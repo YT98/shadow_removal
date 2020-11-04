@@ -108,7 +108,7 @@ class MaskSet:
             perlin_mask = PerlinMask(self.largest_shape)
             return perlin_mask
         # Create progress bar
-        print_progress_bar(0, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
+        print_progress_bar(start, 0, silhouette_mask_set_length, prefix="Perlin Masks:", suffix="Complete", length=50)
         # Create perlin mask set
         for i in range(silhouette_mask_set_length):
             # Create thread and wait for completion
