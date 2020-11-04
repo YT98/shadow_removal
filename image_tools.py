@@ -17,7 +17,6 @@ def load_image(path):
     ext = os.path.splitext(path)[1]
     if ext == ".jpg":
         image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-        image = cv2.cvtColor(image.copy(), cv2.COLOR_GRAY2BGR)
     elif ext == ".png":
         image = png_grayscale(cv2.imread(path, cv2.IMREAD_UNCHANGED))
     return np.asarray(image).copy()
