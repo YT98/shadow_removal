@@ -4,13 +4,13 @@ import cv2
 from perlin_noise import perlin_mask
 
 class PerlinMask:
-    def __init__(self, shape):
+    def __init__(self, shape, scale=200.0, octaves=4, lacunarity=2.0, base=1):
         self.shape = shape
-        self.scale = 100.0
-        self.octaves = 4
-        self.lacunarity = 3.0
-        self.base = 1
-        self.persistence = random.uniform(0.05, 0.25)
+        self.scale = scale
+        self.octaves = octaves
+        self.lacunarity = lacunarity
+        self.base = base
+        self.persistence = random.uniform(0.0, 0.85)
         self.transparency = random.uniform(0.4, 0.8)
         self.mask = self.init_mask()
 
@@ -48,8 +48,3 @@ class PerlinMask:
         for color in range(3):
             new_image[:,:,color] = alpha * self.mask[:,:,color] + (1-alpha) * new_image[:,:,color]
         return new_image
-        
-        
-
-
-        
