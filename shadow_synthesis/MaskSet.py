@@ -3,12 +3,14 @@ import cv2
 import queue as que
 import threading
 import time
-import file_tools as file_tools
-import image_tools as image_tools
-import perlin_noise as perlin_noise
-from console_tools import print_progress_bar
-from SilhouetteMask import SilhouetteMask
-from PerlinMask import PerlinMask
+
+import tools.file_tools as file_tools
+import tools.image_tools as image_tools
+import tools.perlin_noise as perlin_noise
+from tools.console_tools import print_progress_bar
+
+from shadow_synthesis.SilhouetteMask import SilhouetteMask
+from shadow_synthesis.PerlinMask import PerlinMask
 
 class MaskSet:
     def __init__(self, largest_shape=(1024,1024), load=False):

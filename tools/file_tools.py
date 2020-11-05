@@ -5,7 +5,7 @@ import cv2
 # ps - phone silhouettes
 # se, he - soft edges, hard edges
 # tb, wb - transparent background, white background
-dirname = os.path.dirname(__file__)
+dirname = os.path.join(os.path.dirname(__file__), "../")
 data = os.path.join(dirname, "data")
 ps_path = os.path.join(dirname, "data/phone_silhouettes")
 ps_he_tb = os.path.join(ps_path, "hard_edges/trans_bg")

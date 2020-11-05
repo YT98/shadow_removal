@@ -1,7 +1,8 @@
 import numpy as np
 import random
 import cv2
-from perlin_noise import perlin_mask
+
+from tools.perlin_noise import perlin_mask
 
 class PerlinMask:
     def __init__(self, mask=None, shape=None, scale=200.0, octaves=4, lacunarity=2.0):

@@ -1,10 +1,12 @@
 import os
 import time
-import file_tools as file_tools
 import cv2
-from console_tools import print_progress_bar
-from MaskSet import MaskSet
-from DocumentSet import DocumentSet
+
+import tools.file_tools as file_tools
+from tools.console_tools import print_progress_bar
+
+from shadow_synthesis.MaskSet import MaskSet
+from shadow_synthesis.DocumentSet import DocumentSet
 
 class ShadowSynthesis:
     def __init__(self, load=False):

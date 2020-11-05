@@ -1,8 +1,7 @@
 import cv2
 import random
-from image_tools import *
-from file_tools import *
-from perlin_noise import *
+
+from tools.perlin_noise import *
 
 class SilhouetteMask:
     def __init__(self, mask):

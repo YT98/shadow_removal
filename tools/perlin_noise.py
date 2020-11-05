@@ -1,7 +1,6 @@
 import cv2
 import noise
 import numpy as np
-from image_tools import show_image
 import random
 
 import matplotlib.pyplot as plt

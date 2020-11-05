@@ -1,5 +1,5 @@
-import file_tools as file_tools
-import image_tools as image_tools
+import tools.file_tools as file_tools
+import tools.image_tools as image_tools
 
 class DocumentSet:
     def __init__(self):
