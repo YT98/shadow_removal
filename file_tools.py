@@ -15,7 +15,9 @@ ps_se_wb = os.path.join(ps_path, "soft_edges/white_bg")
 scanned_documents_path = os.path.join(dirname, "data/scanned_documents/grayscale")
 perlin_masks_path = os.path.join(data, "masks/perlin_masks")
 silhouette_masks_path = os.path.join(data, "masks/silhouette_masks")
-training_data_path = os.path.join(data, "training_data")
+
+hard_drive_path = "/Volumes/UNTITLED"
+training_data_path = os.path.join(hard_drive_path, "training_data")
 
 # Returns list of png or jpg files in directory
 def directory_image_list(directory):
