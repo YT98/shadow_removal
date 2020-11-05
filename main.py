@@ -1,22 +1,34 @@
-from image_tools import *
-from file_tools import *
+import os
+import sys
 
-# from SilhouetteMask import SilhouetteMask
-# silhouette = load_image(directory_image_list(ps_he_tb)[0])
-# silhouette_mask = SilhouetteMask(silhouette)
-# silhouette_mask.scale(1000)
-# test_masked = silhouette_mask.apply(test_scan)
+from shadow_synthesis.ShadowSynthesis import ShadowSynthesis
 
-# from MaskSet import MaskSet
-# scanned_documents = directory_image_list(scanned_documents_path)
-# test_scan = load_image(scanned_documents[1])
-# mask_set = MaskSet((10,10))
-# mask_set.save_masks()
-# test_masked = mask_set.apply_masks(test_scan)
+# Add tools to sys.path so shadow_synthesis directory files can access them
+dirname = os.path.dirname(__file__)
+sys.path.insert(1, os.path.join(dirname, 'tools'))
 
-# show_image(test_masked)
+print("Running shadow synthesis")
 
-from ShadowSynthesis import ShadowSynthesis
-shadow_synthesis = ShadowSynthesis(load=True)
-# shadow_synthesis.mask_set.save_masks()
-shadow_synthesis.create_training_data()
+load = False
+while (load != "y" and load != "n"):
+    load = input("Would you like to load existing masks? (y/n) ")
+    if load == "y":
+        print("Creating shadow synthesis instance with existing masks...")
+        shadow_synthesis = ShadowSynthesis(load=True)
+    elif load == "n":
+        print("Creating shadow synthesis instance and creating masks...")
+        shadow_synthesis = ShadowSynthesis(load=False)
+    else:
+        print("Please answer with \"y\" or with \"n\".")
+    print("Shadow synthesis successfully instantiated. ")
+
+create_training_data = False
+while (create_training_data != "y" and create_training_data != "n"):
+    create_training_data = input("Would you like to create training data? (y/n) ")
+    if create_training_data == "y":
+        batches = int(input("In how many batches would you like to process the training_data creation? "))
+        shadow_synthesis.create_training_data(batches)
+    elif create_training_data == "n":
+        pass
+    else:
+        print("Please answer with \"y\" or with \"n\".")
