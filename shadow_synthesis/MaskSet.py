@@ -67,7 +67,7 @@ class MaskSet:
         # Creates silhouette mask from given silhouette with randomized variables and returns
         def create_silhouette_mask(silhouette):
             transparency = random.uniform(0.4, 0.7)
-            scale = random.randint(400,600)
+            scale = random.randint(200,500)
             silhouette_mask = SilhouetteMask(silhouette)
             silhouette_mask.add_noise()
             silhouette_mask.blur()
