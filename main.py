@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 from shadow_synthesis.ShadowSynthesis import ShadowSynthesis
 
@@ -7,28 +8,27 @@ from shadow_synthesis.ShadowSynthesis import ShadowSynthesis
 dirname = os.path.dirname(__file__)
 sys.path.insert(1, os.path.join(dirname, 'tools'))
 
-print("Running shadow synthesis")
 
-load = False
-while (load != "y" and load != "n"):
-    load = input("Would you like to load existing masks? (y/n) ")
-    if load == "y":
-        print("Creating shadow synthesis instance with existing masks...")
-        shadow_synthesis = ShadowSynthesis(load=True)
-    elif load == "n":
-        print("Creating shadow synthesis instance and creating masks...")
-        shadow_synthesis = ShadowSynthesis(load=False)
-    else:
-        print("Please answer with \"y\" or with \"n\".")
-    print("Shadow synthesis successfully instantiated. ")
+flags = sys.argv[1:]
 
-create_training_data = False
-while (create_training_data != "y" and create_training_data != "n"):
-    create_training_data = input("Would you like to create training data? (y/n) ")
-    if create_training_data == "y":
-        batches = int(input("In how many batches would you like to process the training_data creation? "))
-        shadow_synthesis.create_training_data(batches)
-    elif create_training_data == "n":
-        pass
+help = "--help" in flags
+if help:
+    print("--training-data: Generate training data.")
+    print("--load_masks: Instanciate ShadowSynthesis with existing masks.")
+    print("--batches (optional): Define in how many batches training data should be generated. ")
+
+create_training_data = "--training-data" in flags
+if create_training_data:
+    print("Instanciating ShadowSynthesis...")
+    load_masks = "--load-masks" in flags
+    shadow_synthesis = ShadowSynthesis(load=load_masks)
+    print("ShadowSynthesis successfully instanciated.")
+
+    if "--batches" in flags:
+        batches_index = flags.index("--batches")
+        batches = int(flags[batches_index + 1])
     else:
-        print("Please answer with \"y\" or with \"n\".")
+        batches = 1
+    print("Generating training data ({} batches)...".format(str(batches)))
+    shadow_synthesis.create_training_data(batches)
+    print("Training data successfully generated.")
