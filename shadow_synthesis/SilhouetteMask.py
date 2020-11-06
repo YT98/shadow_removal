@@ -18,8 +18,8 @@ class SilhouetteMask:
     # Trims away given number of pixels from mask
     def cut(self, top, bottom, left, right):
         h,w,*_ = self.mask.shape
-        new_mask = self.mask[top : h-bottom, left : w-right, :]
-        self.mask = new_mask
+        cut_mask = self.mask[top : h-bottom, left : w-right, :]
+        return cut_mask
 
     # Pads mask with transparent pixels 
     # Returned image is of same shape as input image
@@ -33,14 +33,14 @@ class SilhouetteMask:
             trim_top = mask_h - img_h
             trim_left = random.randint(0, mask_w - img_w)
             trim_right = mask_w - img_w - trim_left
-            self.cut(trim_top, 0, trim_left, trim_right)
+            padded = self.cut(trim_top, 0, trim_left, trim_right)
         elif (mask_h >= img_h) and (mask_w < img_w):
             trim_top = mask_h - img_h
             padding_left = random.randint(0, img_w - mask_w)
             padding_right = img_w - mask_w - padding_left
-            self.cut(trim_top, 0, 0, 0)
+            padded = self.cut(trim_top, 0, 0, 0)
             padded = cv2.copyMakeBorder(
-                self.mask.copy(), 
+                padded, 
                 0,
                 0, 
                 padding_left, 
@@ -48,14 +48,13 @@ class SilhouetteMask:
                 cv2.BORDER_CONSTANT, 
                 value=[255,255,255,0]
             )
-            self.mask = padded
         elif (mask_h < img_h) and (mask_w >= img_w):
             padding_top = img_h - mask_h
             trim_left = random.randint(0, mask_w - img_w)
             trim_right = mask_w - img_w - trim_left
-            self.cut(0, 0, trim_left, trim_right)
+            padded = self.cut(0, 0, trim_left, trim_right)
             padded = cv2.copyMakeBorder(
-                self.mask.copy(), 
+                padded, 
                 padding_top,
                 0, 
                 0, 
@@ -63,13 +62,12 @@ class SilhouetteMask:
                 cv2.BORDER_CONSTANT, 
                 value=[255,255,255,0]
             )
-            self.mask = padded
         else:
             padding_top = img_h - mask_h
             padding_left = random.randint(0, img_w - mask_w)
             padding_right = img_w - mask_w - padding_left
             padded = cv2.copyMakeBorder(
-                self.mask.copy(), 
+                self.mask, 
                 padding_top,
                 0, 
                 padding_left, 
@@ -77,7 +75,7 @@ class SilhouetteMask:
                 cv2.BORDER_CONSTANT, 
                 value=[255,255,255,0]
             )
-            self.mask = padded
+        return padded
 
     # Changes mask transparency
     def change_transparency(self, transparency):
@@ -90,29 +88,29 @@ class SilhouetteMask:
 
     # Applies mask to given image
     def apply(self, image):
-        self.pad(image.shape)
+        padded = self.pad(image.shape)
         new_image = image.copy()
         # Normalize alpha channel from 0-255 to 0-1
-        alpha = self.mask[:,:,3] / 255.0
+        alpha = padded[:,:,3] / 255.0
         # TODO try doing :3 instead of range(3)
         # Element-wise multiplication, each channel multiplied by alpha (or 1-alpha)
         for color in range(3):
-            new_image[:,:,color] = alpha * self.mask[:,:,color] + (1-alpha) * new_image[:,:,color]
+            new_image[:,:,color] = alpha * padded[:,:,color] + (1-alpha) * new_image[:,:,color]
         return new_image
 
     # Applies gaussian blur to have a more realistic mask
     def blur(self):
         # Pad mask a little
-        self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
+        padded = self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
         # Gaussian blur
         kernel_size = (15, 15)
-        blurred = cv2.GaussianBlur(self.mask, kernel_size, 15)
+        blurred = cv2.GaussianBlur(padded, kernel_size, 15)
         self.mask = blurred
         
     # Adds gaussian noise to have a more realistic mask
     def add_noise(self):
         # Pad mask a little
-        self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
+        padded = self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
         # Create perlin mask
         scale = 100.0
         octaves = 4
@@ -120,7 +118,7 @@ class SilhouetteMask:
         base = 1
         persistence = random.uniform(0.05, 0.25)
         mask = perlin_mask(
-            (self.mask.shape[0], self.mask.shape[1]), 
+            (padded.shape[0], padded.shape[1]), 
             scale, 
             octaves, 
             persistence, 
@@ -129,7 +127,7 @@ class SilhouetteMask:
         )
         # Add alpha channel to perlin mask
         new_mask = mask.copy()
-        a = self.mask[:,:,3]
+        a = padded[:,:,3]
         r,g,b = cv2.split(new_mask)
         new_mask = cv2.merge((r,g,b,a))
         self.perlin_mask = new_mask
