@@ -27,8 +27,7 @@ class ShadowSynthesis:
         for batch_index in range(batch_count - 1):
             batch_start = batch_index * batch_length
             batch_end = (batch_index + 1) * batch_length
-            batch_set = self.document_set.document_set[batch_start:batch_end]
-
+            batch_set.append(self.document_set.document_set[batch_start:batch_end])
         progress_bar_length = batch_length * len(mask_set)
 
         # Iterate over batches
@@ -36,8 +35,8 @@ class ShadowSynthesis:
             # Start timer
             start = time.time()
             # Initialize progress bar
-            print_progress_bar(start, 0, progress_bar_length, prefix="Masked images created - batch {}".format(batch_index+1), suffix="Complete", length=50)
             count = 0
+            print_progress_bar(start, count, progress_bar_length, prefix="Masked images created - batch {}".format(batch_index+1), suffix="Complete", length=50)
             # Create and save masked images
             for doc_batch_index, doc in enumerate(batch):
                 doc_index = (batch_index * doc_batch_index) + doc_batch_index
@@ -49,5 +48,5 @@ class ShadowSynthesis:
                     masked_doc = mask.apply(doc)
                     file_tools.save_image(masked_document_destination, masked_doc)
                     # Update progress bar
-                    count += 1
+                    count = (doc_batch_index * len(self.mask_set.mask_set)) + mask_index
                     print_progress_bar(start, count, progress_bar_length, prefix="Masked images created - batch {}".format(batch_index+1), suffix="Complete", length=50)
