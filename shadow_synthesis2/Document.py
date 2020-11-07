@@ -11,7 +11,6 @@ class Document:
 
     def load_image(self):
         # Load and convert to grayscale
-        self.image = cv2.cvtColor(cv2.imread(self.path, cv2.IMREAD_UNCHANGED), cv2.COLOR_RGB2GRAY)
-        # self.image = self.crop_image(image)
+        return cv2.cvtColor(cv2.imread(self.path, cv2.IMREAD_UNCHANGED), cv2.COLOR_RGB2GRAY)
     
 
