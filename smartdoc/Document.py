@@ -29,4 +29,36 @@ class Document:
 
     def load_image(self):
         image_path = os.path.join(file_tools.smart_doc_images_path, self.path)
-        self.image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        self.image = self.crop_image(image)
+
+    # Find bounding rectangle and crops image
+    def crop_image(self, image):
+        # Apply threshold
+        _, thresh = cv2.threshold(self.image, 120, 255, cv2.THRESH_BINARY)
+        # Find contours
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contour = max(contours, key = cv2.contourArea)
+        # Get rectangle box points
+        rect = cv2.minAreaRect(contour)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+        # Get rectangle dimensions
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+        # Get points for warping
+        src_pts = box.astype("float32")
+        dst_pts = np.array([
+            [0, height-1],
+            [0, 0],
+            [width-1, 0],
+            [width-1, height-1]
+        ], dtype="float32")
+        # Warp rotated rectangle
+        M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+        warped = cv2.warpPerspective(image, M, (width, height))
+        # Crops 20 pixels to remove non-cropped pixels
+        h, w, *_ = warped.shape
+        roi = warped[20:h-20, 20:w-20]
+        # Returns cropped and warped rectangle
+        return roi
