@@ -7,6 +7,7 @@ class SmartDocDocumentSet:
     def __init__(self):
         self.smartdoc_path = file_tools.smart_doc_images_path
         self.document_set = self.init_document_set()
+        self.no_shadow_docs, self.shadow_docs = self.split_set()
 
     def get_document_paths(self):
         document_paths = []
@@ -35,3 +36,14 @@ class SmartDocDocumentSet:
         pool.close()
         document_set = list(filter(None, document_set))
         return document_set
+
+    # Splits set into shadow and no-shadow documents
+    def split_set(self):
+        no_shadow_docs = []
+        shadow_docs = []
+        for doc in self.document_set:
+            if doc.light_condition == 1:
+                no_shadow_docs.append(doc)
+            if doc.light_condition == 4:
+                shadow_docs.append(doc)
+        return (no_shadow_docs, shadow_docs)
