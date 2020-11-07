@@ -2,7 +2,7 @@ import os
 import multiprocessing
 
 import tools.file_tools as file_tools
-import shadow_synthesis2.SmartDocDocument as SmartDocDocument
+from shadow_synthesis2.SmartDocDocument import SmartDocDocument
 
 class SmartDocDocumentSet:
     def __init__(self):
