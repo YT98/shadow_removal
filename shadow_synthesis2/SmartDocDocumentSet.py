@@ -5,7 +5,7 @@ import shadow_synthesis2.SmartDocDocument as SmartDocDocument
 
 class SmartDocDocumentSet:
     def __init__(self):
-        self.smartdoc_path = file_tools.smart_doc_images_path
+        self.smartdoc_path = file_tools.smart_doc_documents_path
         self.document_set = self.init_document_set()
         self.no_shadow_docs, self.shadow_docs = self.split_set()
 
