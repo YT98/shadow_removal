@@ -22,7 +22,13 @@ class DocumentSet:
 
     def init_document(self, path):
         doc = Document(path)
-        if (doc.motion_blur == 0 and doc.out_of_focus_blur == 0 and doc.light_condition != 2 and
+        # Only return documents with
+        # - No motion blur
+        # - No out of focus blur
+        # - Light conditions: night + table lamp night or table lamp night + object shadow
+        # - Lateral incidence angle = Logintudinal incidence angle = 0
+        if (doc.motion_blur == 0 and doc.out_of_focus_blur == 0 and 
+            (doc.light_condition == 1 or doc.light_condition == 4) and
             doc.lateral_incidence_angle == 0 and doc.longitudinal_incidence_angle == 0):
             return Document(path)
 
@@ -31,4 +37,5 @@ class DocumentSet:
         pool = multiprocessing.Pool()
         document_set = pool.map(self.init_document, document_paths)
         pool.close()
+        document_set = list(filter(None, document_set))
         self.document_set = document_set
