@@ -15,4 +15,4 @@ WORKDIR /app
 ADD . /app
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "main.py", "--training-data", "--batches", "4"]
+CMD ["python", "main.py", "--load-masks", "--training-data", "--batches", "4"]
