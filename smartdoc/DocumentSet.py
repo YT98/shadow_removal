@@ -9,7 +9,6 @@ from smartdoc.Document import Document
 class DocumentSet:
     def __init__(self):
         self.smartdoc_path = file_tools.smart_doc_images_path
-        self.document_set = []
         self.init_document_set()
 
     def get_document_paths(self):
