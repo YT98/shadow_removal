@@ -1,5 +1,6 @@
 import os
 import cv2
+import numpy as np
 
 import tools.file_tools as file_tools
 
@@ -30,12 +31,13 @@ class Document:
     def load_image(self):
         image_path = os.path.join(file_tools.smart_doc_images_path, self.path)
         image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         self.image = self.crop_image(image)
 
     # Find bounding rectangle and crops image
     def crop_image(self, image):
         # Apply threshold
-        _, thresh = cv2.threshold(self.image, 120, 255, cv2.THRESH_BINARY)
+        _, thresh = cv2.threshold(image, 120, 255, cv2.THRESH_BINARY)
         # Find contours
         contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contour = max(contours, key = cv2.contourArea)
