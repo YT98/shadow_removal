@@ -12,10 +12,11 @@ class SmartDocDocumentSet:
 
     def get_document_paths(self):
         document_paths = []
-        for file in os.listdir(self.smartdoc_path):
+        for filename in os.listdir(self.smartdoc_path):
             # Ignore hidden files
-            if not file.startswith('.'):
-                document_paths.append(file)
+            if not filename.startswith('.'):
+                file_path = os.path.join(self.smartdoc_path, filename)
+                document_paths.append(file_path)
         return document_paths
 
     def init_document(self, path):
