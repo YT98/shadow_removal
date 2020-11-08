@@ -1,4 +1,5 @@
 import multiprocessing
+import tqdm
 
 import tools.file_tools as file_tools
 from shadow_synthesis2.Document import Document
@@ -15,8 +16,7 @@ class DocumentSet:
         print("Initializing DocumentSet...")
         documents_path_list = file_tools.directory_image_list(self.documents_path)
         pool = multiprocessing.Pool()
-        document_set = pool.map(Document, documents_path_list)
-        print("DocumentSet Initialized")
+        document_set = list(tqdm.tqdm(pool.imap(Document, documents_path_list), total=len(documents_path_list)))
         return document_set
 
     # Returns document shape
