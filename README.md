@@ -23,12 +23,12 @@ A set of manually drawn silhouettes is used to create realistic shadows on a set
 | ![Original silhouette][silhouette.png] | ![Silhouette after operations][silhouette_mask.png] | ![Silhouette applied on document][silhouette_applied.jpg] |
 
 ### Document Images
-Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) and [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). Document images from the IUPR dataset are scanned and trimmed. Document images from SmartDocQA are, they are manually trimmed using open-cv.
+Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) and [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). The images from the IUPR dataset are scanned and trimmed; the images from SmartDocQA are not, they are manually trimmed using open-cv.
 
 #### Operations on SmartDocQA document images:
 1. Threshold is applied to blacken part of image which is outside of document (see open cv threshold)
 2. Document edges are detected using open cv contour detection.
-3. Using document edges, document image is trimmed and warped.
+3. Using document edgebox, document image is trimmed and warped.
 
 [smart_doc_original.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/smart_doc_original.jpg
 [smart_doc_treshold.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/smart_doc_threshold.jpg
