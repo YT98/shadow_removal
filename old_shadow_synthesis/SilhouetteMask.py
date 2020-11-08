@@ -1,42 +1,12 @@
 import cv2
 import random
-import uuid
 
-import tools.file_tools as file_tools
 from tools.perlin_noise import *
 
 class SilhouetteMask:
-    def __init__(self, silhouette_path=None, mask_path=None):
-        if mask_path == None:
-            self.path = silhouette_path
-            self.load_mask(silhouette_path)
-        else:
-            self.path = mask_path
-            # self.mask = self.load_mask(mask_path)
-
-    # Loads mask image
-    def load_mask(self):
-        mask = cv2.imread(self.path, cv2.IMREAD_UNCHANGED)
+    def __init__(self, mask):
         self.mask = mask
-
-    # Saves created silhouette mask
-    def save_mask(self):
-        save_path = file_tools.silhouette_masks_path + "/" + str(uuid.uuid4()) + ".png"
-        self.path = save_path
-        cv2.imwrite(save_path, self.mask)
-
-    # Applies mask to given image
-    def apply(self, image):
-        padded = self.pad(image.shape)
-        new_image = image.copy()
-        # Normalize alpha channel from 0-255 to 0-1
-        alpha = padded[:,:,3] / 255.0
-        # TODO try doing :3 instead of range(3)
-        # Element-wise multiplication, each channel multiplied by alpha (or 1-alpha)
-        for color in range(3):
-            new_image[:,:,color] = alpha * padded[:,:,color] + (1-alpha) * new_image[:,:,color]
-        return new_image
-
+    
     # Resizes mask keeping its original aspect ratio
     def scale(self, scale):
         width = int(self.mask.shape[1] * scale / 100)
@@ -45,7 +15,7 @@ class SilhouetteMask:
         scaled = cv2.resize(self.mask, shape, interpolation=cv2.INTER_AREA)
         self.mask = np.asarray(scaled)
 
-    # Trims given number of pixels from mask
+    # Trims away given number of pixels from mask
     def cut(self, top, bottom, left, right):
         h,w,*_ = self.mask.shape
         cut_mask = self.mask[top : h-bottom, left : w-right, :]
@@ -56,8 +26,8 @@ class SilhouetteMask:
     # Original mask is always placed at the bottom but horizontal position is randomly determined
     def pad(self, image_shape):
         # Unpack shapes
-        (img_h, img_w, *_) = image_shape
-        (mask_h, mask_w, *_) = self.mask.shape
+        (img_h, img_w, _) = image_shape
+        (mask_h, mask_w, _) = self.mask.shape
         # Check mask / image dimensions
         if (mask_h >= img_h) and (mask_w >= img_w):
             trim_top = mask_h - img_h
@@ -116,14 +86,17 @@ class SilhouetteMask:
         new_mask = cv2.merge((r,g,b,new_a))
         self.mask = new_mask
 
-    # Applies gaussian blur to have a more realistic mask
-    def blur(self, mask):
-        # Pad mask a little
-        padded = self.pad(mask, (mask.shape[0]+50, mask.shape[1]+50, 0))
-        # Gaussian blur
-        kernel_size = (15, 15)
-        blurred = cv2.GaussianBlur(padded, kernel_size, 15)
-        self.mask = blurred
+    # Applies mask to given image
+    def apply(self, image):
+        padded = self.pad(image.shape)
+        new_image = image.copy()
+        # Normalize alpha channel from 0-255 to 0-1
+        alpha = padded[:,:,3] / 255.0
+        # TODO try doing :3 instead of range(3)
+        # Element-wise multiplication, each channel multiplied by alpha (or 1-alpha)
+        for color in range(3):
+            new_image[:,:,color] = alpha * padded[:,:,color] + (1-alpha) * new_image[:,:,color]
+        return new_image
 
     # Applies gaussian blur to have a more realistic mask
     def blur(self):
@@ -159,3 +132,6 @@ class SilhouetteMask:
         new_mask = cv2.merge((r,g,b,a))
         self.perlin_mask = new_mask
         self.mask = self.apply(new_mask)
+
+
+
