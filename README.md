@@ -38,4 +38,15 @@ Document images are agregated from two different datasets: [SmartDocQA](http://n
 |----------------------------------------------------|----------------------------------------------------|--------------------------------------------------|
 | ![Original SmartDoc image][smart_doc_original.jpg] | ![Treshold SmartDoc image][smart_doc_treshold.jpg] | ![Trimmed SmartDoc image][smart_doc_trimmed.jpg] |
 
+### Training Data
+To create the training data, silhouettes are generated using the aformentionned methods and applied on the document images. Here is the training data creation procedure:
+1. Masks and documents are identified using the uuid module.
+2. Original document is saved as "doc_\<\<document uuid\>\>.jpg"
+3. Masked documents are saved as "doc_\<\<document uuid\>\>_mask_\<\<mask uuid\>\>.jpg
+
+In order to improve run time, the python multiprocessing module as well as the pathos module are used to do multiple operations in parallel.
+
+### Docker image
+In order to run the application on a Google Compute Engine server instance, a docker image is created and pushed to Docker Hub ([Docker Repository Link](https://hub.docker.com/r/djadjamtl/shadow_removal)) and then pulled on the server.
+
 ## Neural Network (Coming soon)
