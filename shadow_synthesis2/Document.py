@@ -10,7 +10,7 @@ class Document:
         return path_list[len(path_list)-1]
 
     def load_image(self):
-        # Load and convert to grayscale
-        return cv2.imread(self.path, cv2.IMREAD_UNCHANGED)
+        image = cv2.imread(self.path, cv2.IMREAD_UNCHANGED)
+        return cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
     
 
