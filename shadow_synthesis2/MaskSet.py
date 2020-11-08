@@ -18,9 +18,9 @@ class MaskSet:
         else:
             # Saves and populates self.mask_set
             self.create_silhouette_masks()
-            self.load_silhouette_masks()
 
     # TODO: Change "load" to something else
+
     # Load existing silhouette masks
     def load_silhouette_masks(self):
         print("Loading silhouette masks...")
@@ -35,7 +35,7 @@ class MaskSet:
 
     # Create new silhouette masks
     def create_silhouette_masks(self):
-        print("Creating silhouette masks...")
+        print("Creating and loading silhouette masks...")
         # Get silhouette paths
         silhouette_paths = file_tools.directory_image_list(self.silhouettes_path)
         # Delete already existing masks from directory
@@ -43,8 +43,9 @@ class MaskSet:
             os.remove(os.path.join(self.silhouette_masks_path, f))
         # Create silhouette masks
         pool = multiprocessing.Pool()
-        _ = list(tqdm.tqdm(pool.imap(self.create_silhouette_mask, silhouette_paths), total=len(silhouette_paths)))
+        mask_list = list(tqdm.tqdm(pool.imap(self.create_silhouette_mask, silhouette_paths), total=len(silhouette_paths)))
         pool.close()
+        self.mask_set = mask_list
     def create_silhouette_mask(self, silhouette_path):
         mask = SilhouetteMask(silhouette_path=silhouette_path)
         mask.add_noise()
@@ -52,3 +53,4 @@ class MaskSet:
         mask.scale(random.randint(200, 500))
         mask.change_transparency(random.uniform(0.4, 0.7))
         mask.save_mask()
+        return mask
