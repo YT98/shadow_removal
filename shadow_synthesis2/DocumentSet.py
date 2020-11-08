@@ -27,8 +27,9 @@ class DocumentSet:
 
     # Returns largest width and largest height in document set
     def get_largest_shape(self):
+        print("Getting largest document shape...")
         pool = multiprocessing.Pool()
-        shape_set = pool.map(self.get_shape, self.document_set)
+        shape_set = list(tqdm.tqdm(pool.imap(self.get_shape, self.document_set), total=len(self.document_set)))
         pool.close()
         largest_h = max(shape_set, key=lambda x: x[0])
         largest_w = max(shape_set, key=lambda x: x[1])
