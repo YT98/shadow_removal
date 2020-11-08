@@ -11,7 +11,6 @@ A set of manually drawn silhouettes is used to create realistic shadows on a set
 2. Silhouette is blurred using a Gaussian convolution operation (see open cv gaussian blurring).
 3. Silhouette is randomly scaled (200-500%)
 4. Silhouette transparency is randomly determined (0.4 - 0.7)
-Silhouette application on document image:
 5. Silhouette is padded with empty pixels (or trimmed) so it has same dimensions as document image.
 6. Final image is a linear blend between original document image and silhouette image.
 
@@ -24,7 +23,7 @@ Silhouette application on document image:
 | ![Original silhouette][silhouette.png] | ![Silhouette after operations][silhouette_mask.png] | ![Silhouette applied on document][silhouette_applied.jpg] |
 
 ### Document Images
-Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) from [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). Document images from the IUPR dataset are scanned and trimmed. Document images from SmartDocQA are, they are manually trimmed using open-cv.
+Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) and [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). Document images from the IUPR dataset are scanned and trimmed. Document images from SmartDocQA are, they are manually trimmed using open-cv.
 
 #### Operations on SmartDocQA document images:
 1. Threshold is applied to blacken part of image which is outside of document (see open cv threshold)
