@@ -1,5 +1,6 @@
 import os
 import multiprocessing
+import tqdm
 
 import tools.file_tools as file_tools
 from shadow_synthesis2.SmartDocDocument import SmartDocDocument
@@ -35,10 +36,9 @@ class SmartDocDocumentSet:
         print("Initializing SmartDocDocumentSet...")
         document_paths = self.get_document_paths()
         pool = multiprocessing.Pool()
-        document_set = pool.map(self.init_document, document_paths)
+        document_set = list(tqdm.tqdm(pool.imap(self.init_document, document_paths), total=len(document_paths)))
         pool.close()
         document_set = list(filter(None, document_set))
-        print("SmartDocDocumentSet Initialized.")
         return document_set
 
     # Splits set into shadow and no-shadow documents
