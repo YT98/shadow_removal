@@ -2,7 +2,7 @@ import multiprocessing
 import tqdm
 
 import tools.file_tools as file_tools
-from shadow_synthesis2.Document import Document
+from shadow_synthesis.Document import Document
 
 class DocumentSet:
     def __init__(self, smart_doc_documents):

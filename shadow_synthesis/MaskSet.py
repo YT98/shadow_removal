@@ -5,7 +5,7 @@ import tqdm
 
 import tools.file_tools as file_tools
 
-from shadow_synthesis2.SilhouetteMask import SilhouetteMask
+from shadow_synthesis.SilhouetteMask import SilhouetteMask
 
 class MaskSet:
     def __init__(self, largest_shape, load=False):

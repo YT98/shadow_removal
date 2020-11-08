@@ -8,9 +8,9 @@ from itertools import product
 import tools.file_tools as file_tools
 import tools.image_tools as image_tools
 
-from shadow_synthesis2.SmartDocDocumentSet import SmartDocDocumentSet
-from shadow_synthesis2.DocumentSet import DocumentSet
-from shadow_synthesis2.MaskSet import MaskSet
+from shadow_synthesis.SmartDocDocumentSet import SmartDocDocumentSet
+from shadow_synthesis.DocumentSet import DocumentSet
+from shadow_synthesis.MaskSet import MaskSet
 
 class ShadowSynthesis:
     def __init__(self, load_masks=False):

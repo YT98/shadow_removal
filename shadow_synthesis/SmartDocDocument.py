@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from shadow_synthesis2.Document import Document
+from shadow_synthesis.Document import Document
 
 class SmartDocDocument(Document):
     def __init__(self, path):
