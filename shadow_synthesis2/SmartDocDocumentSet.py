@@ -32,11 +32,13 @@ class SmartDocDocumentSet:
             return SmartDocDocument(path)
 
     def init_document_set(self):
+        print("Initializing SmartDocDocumentSet")
         document_paths = self.get_document_paths()
         pool = multiprocessing.Pool()
         document_set = pool.map(self.init_document, document_paths)
         pool.close()
         document_set = list(filter(None, document_set))
+        print("SmartDocDocumentSet Initialized")
         return document_set
 
     # Splits set into shadow and no-shadow documents
