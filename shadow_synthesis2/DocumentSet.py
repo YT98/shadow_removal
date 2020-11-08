@@ -12,11 +12,11 @@ class DocumentSet:
 
     # Initializes documents set
     def init_document_set(self):
+        print("Initializing DocumentSet...")
         documents_path_list = file_tools.directory_image_list(self.documents_path)
-        document_set = []
-        for path in documents_path_list:
-            document = Document(path)
-            document_set.append(document)
+        pool = multiprocessing.Pool()
+        document_set = pool.map(Document, documents_path_list)
+        print("DocumentSet Initialized")
         return document_set
 
     # Returns document shape
