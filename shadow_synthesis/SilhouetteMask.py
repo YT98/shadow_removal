@@ -76,7 +76,7 @@ class SilhouetteMask:
                 padding_left, 
                 padding_right, 
                 cv2.BORDER_CONSTANT, 
-                value=[255,255,255,0]
+                value=[0,0,0,0]
             )
         elif (mask_h < img_h) and (mask_w >= img_w):
             padding_top = img_h - mask_h
@@ -90,7 +90,7 @@ class SilhouetteMask:
                 0, 
                 0, 
                 cv2.BORDER_CONSTANT, 
-                value=[255,255,255,0]
+                value=[0,0,0,0]
             )
         else:
             padding_top = img_h - mask_h
@@ -103,7 +103,7 @@ class SilhouetteMask:
                 padding_left, 
                 padding_right, 
                 cv2.BORDER_CONSTANT, 
-                value=[255,255,255,0]
+                value=[0,0,0,0]
             )
         return padded
 
@@ -122,13 +122,14 @@ class SilhouetteMask:
         padded = self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
         # Gaussian blur
         kernel_size = (15, 15)
-        blurred = cv2.GaussianBlur(padded, kernel_size, 15)
+        blurred = cv2.GaussianBlur(padded, kernel_size, 15, borderType=cv2.BORDER_REPLICATE)
         self.mask = blurred
         
     # Adds gaussian noise to have a more realistic mask
     def add_noise(self):
         # Pad mask a little
         padded = self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
+        self.mask = padded
         # Create perlin mask
         scale = 100.0
         octaves = 4
