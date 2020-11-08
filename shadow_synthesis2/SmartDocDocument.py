@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 from shadow_synthesis2.Document import Document
 
