@@ -1,6 +1,13 @@
 # Shadow Removal (Work in Progress)
 Training a Convolutional Neural Network (CNN) to detect and remove unwanted shadows from smartphone document captures.
 
+## Built with
+- Python
+- Docker
+- [OpenCV](https://opencv.org/) (image manipulation)
+- [Pathos](https://pypi.org/project/pathos/) (multiprocessing)
+- [Noise](https://pypi.org/project/noise/) (Perlin noise)
+
 ## Data Synthesis
 
 ### Silhouettes
