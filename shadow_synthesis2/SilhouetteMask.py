@@ -8,18 +8,21 @@ from tools.perlin_noise import *
 class SilhouetteMask:
     def __init__(self, silhouette_path=None, mask_path=None):
         if mask_path == None:
-            self.silhouette_path = silhouette_path
-            self.mask = self.load_mask(silhouette_path)
+            self.path = silhouette_path
+            self.load_mask(silhouette_path)
         else:
-            self.mask_path = mask_path
+            self.path = mask_path
+            # self.mask = self.load_mask(mask_path)
 
     # Loads mask image
-    def load_mask(self, path):
-        return cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    def load_mask(self):
+        mask = cv2.imread(self.path, cv2.IMREAD_UNCHANGED)
+        self.mask = mask
 
     # Saves created silhouette mask
     def save_mask(self):
         save_path = file_tools.silhouette_masks_path + "/" + str(uuid.uuid4()) + ".png"
+        self.path = save_path
         cv2.imwrite(save_path, self.mask)
 
     # Applies mask to given image
@@ -53,8 +56,8 @@ class SilhouetteMask:
     # Original mask is always placed at the bottom but horizontal position is randomly determined
     def pad(self, image_shape):
         # Unpack shapes
-        (img_h, img_w, _) = image_shape
-        (mask_h, mask_w, _) = self.mask.shape
+        (img_h, img_w, *_) = image_shape
+        (mask_h, mask_w, *_) = self.mask.shape
         # Check mask / image dimensions
         if (mask_h >= img_h) and (mask_w >= img_w):
             trim_top = mask_h - img_h
