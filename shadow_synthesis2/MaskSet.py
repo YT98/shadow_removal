@@ -24,7 +24,10 @@ class MaskSet:
     # Load existing silhouette masks
     def load_silhouette_masks(self):
         print("Loading silhouette masks...")
-        mask_paths = os.listdir(self.silhouette_masks_path)
+        mask_names = os.listdir(self.silhouette_masks_path)
+        mask_paths = []
+        for name in mask_names:
+            mask_paths.append(os.path.join(self.silhouette_masks_path, name))
         pool = multiprocessing.Pool()
         mask_list = list(tqdm.tqdm(pool.imap(self.load_silhouette_mask, mask_paths), total=len(mask_paths)))
         pool.close()
