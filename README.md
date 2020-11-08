@@ -15,9 +15,13 @@ Silhouette application on document image:
 5. Silhouette is padded with empty pixels (or trimmed) so it has same dimensions as document image.
 6. Final image is a linear blend between original document image and silhouette image.
 
-| Original silhouette image | Silhouette image after operations | Silhouette image applied on document image |
-|---------------------------|-----------------------------------|--------------------------------------------|
-|                           |                                   |                                            |
+[silhouette.png]: https://github.com/YT98/shadow_removal/blob/master/README_images/silhouette.png
+[silhouette_mask.png]: https://github.com/YT98/shadow_removal/blob/master/README_images/silhouette_mask.png
+[silhouette_applied.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/silhouette_applied.jpg
+
+| Original silhouette image              | Silhouette image after operations                   | Silhouette image applied on document image                |
+|----------------------------------------|-----------------------------------------------------|-----------------------------------------------------------|
+| ![Original silhouette][silhouette.png] | ![Silhouette after operations][silhouette_mask.png] | ![Silhouette applied on document][silhouette_applied.jpg] |
 
 ### Document Images
 Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) from [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). Document images from the IUPR dataset are scanned and trimmed. Document images from SmartDocQA are, they are manually trimmed using open-cv.
@@ -27,8 +31,12 @@ Document images are agregated from two different datasets: [SmartDocQA](http://n
 2. Document edges are detected using open cv contour detection.
 3. Using document edges, document image is trimmed and warped.
 
-| Original SmartDoc image | SmartDoc image after threshold application | Trimmed SmartDoc image |
-|-------------------------|--------------------------------------------|------------------------|
-|                         |                                            |                        |
+[smart_doc_original.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/smart_doc_original.jpg
+[smart_doc_treshold.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/smart_doc_threshold.jpg
+[smart_doc_trimmed.jpg]: https://github.com/YT98/shadow_removal/blob/master/README_images/smart_doc_trimmed.jpg
+
+| Original SmartDoc image                            | SmartDoc image after threshold application         | Trimmed SmartDoc image                           |
+|----------------------------------------------------|----------------------------------------------------|--------------------------------------------------|
+| ![Original SmartDoc image][smart_doc_original.jpg] | ![Treshold SmartDoc image][smart_doc_treshold.jpg] | ![Trimmed SmartDoc image][smart_doc_trimmed.jpg] |
 
 ## Neural Network (Coming soon)
