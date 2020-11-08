@@ -19,16 +19,6 @@ if help:
 
 create_training_data = "--training-data" in flags
 if create_training_data:
-    print("Instanciating ShadowSynthesis...")
     load_masks = "--load-masks" in flags
     shadow_synthesis = ShadowSynthesis(load=load_masks)
-    print("ShadowSynthesis successfully instanciated.")
-
-    if "--batches" in flags:
-        batches_index = flags.index("--batches")
-        batches = int(flags[batches_index + 1])
-    else:
-        batches = 1
-    print("Generating training data ({} batches)...".format(str(batches)))
-    shadow_synthesis.create_training_data(batches)
-    print("Training data successfully generated.")
+    shadow_synthesis.create_training_data()
