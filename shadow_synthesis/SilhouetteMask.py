@@ -9,7 +9,7 @@ class SilhouetteMask:
     def __init__(self, silhouette_path=None, mask_path=None):
         if mask_path == None:
             self.path = silhouette_path
-            self.load_mask(silhouette_path)
+            self.load_mask()
         else:
             self.path = mask_path
             # self.mask = self.load_mask(mask_path)
@@ -22,8 +22,8 @@ class SilhouetteMask:
     # Saves created silhouette mask
     def save_mask(self):
         save_path = file_tools.silhouette_masks_path + "/" + str(uuid.uuid4()) + ".png"
-        self.path = save_path
         cv2.imwrite(save_path, self.mask)
+        self.path = save_path
 
     # Applies mask to given image
     def apply(self, image):
@@ -117,15 +117,6 @@ class SilhouetteMask:
         self.mask = new_mask
 
     # Applies gaussian blur to have a more realistic mask
-    def blur(self, mask):
-        # Pad mask a little
-        padded = self.pad(mask, (mask.shape[0]+50, mask.shape[1]+50, 0))
-        # Gaussian blur
-        kernel_size = (15, 15)
-        blurred = cv2.GaussianBlur(padded, kernel_size, 15)
-        self.mask = blurred
-
-    # Applies gaussian blur to have a more realistic mask
     def blur(self):
         # Pad mask a little
         padded = self.pad((self.mask.shape[0]+50, self.mask.shape[1]+50, 0))
@@ -157,5 +148,4 @@ class SilhouetteMask:
         a = padded[:,:,3]
         r,g,b = cv2.split(new_mask)
         new_mask = cv2.merge((r,g,b,a))
-        self.perlin_mask = new_mask
         self.mask = self.apply(new_mask)
