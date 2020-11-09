@@ -30,7 +30,7 @@ A set of manually drawn silhouettes is used to create realistic shadows on a set
 | ![Original silhouette][silhouette.png] | ![Silhouette after operations][silhouette_mask.png] | ![Silhouette applied on document][silhouette_applied.jpg] |
 
 ### Document Images
-Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) and [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images). The images from the IUPR dataset are scanned and trimmed; the images from SmartDocQA are not, they are manually trimmed using open-cv.
+Document images are agregated from two different datasets: [SmartDocQA](http://navidomass.univ-lr.fr/SmartDoc-QA/) [[1]](#1) and [The IUPR Dataset of Camera-Captured Document Images](https://www.researchgate.net/publication/262294457_The_IUPR_Dataset_of_Camera-Captured_Document_Images) [[2]](#2). The images from the IUPR dataset are scanned and trimmed; the images from SmartDocQA are not, they are manually trimmed using open-cv.
 
 #### Operations on SmartDocQA document images:
 1. Threshold is applied to blacken part of image which is outside of document (see open cv threshold)
@@ -57,3 +57,9 @@ In order to improve run time, the python multiprocessing module as well as the p
 In order to run the application on a Google Compute Engine server instance, a docker image is created and pushed to Docker Hub ([Docker Repository Link](https://hub.docker.com/r/djadjamtl/shadow_removal)) and then pulled on the server.
 
 ## Neural Network (Coming soon)
+
+## References
+
+[1] Nibal Nayef, Muhammad Muzzamil Luqman, Sophea Prum, Sebastien Eskenazi, Joseph Chazalon, Jean-Marc Ogier: _“SmartDoc-QA: A Dataset for Quality Assessment of Smartphone Captured Document Images - Single and Multiple Distortions”_, Proceedings of the sixth international workshop on Camera Based Document Analysis and Recognition (CBDAR), 2015.
+
+[2]  Bukhari, T. (2012). The IUPR Dataset of Camera-Captured Document Images. In _Camera-Based Document Analysis and Recognition_ (pp. 164–171). Springer Berlin Heidelberg.
